@@ -1,0 +1,34 @@
+# Xcode
+#
+# gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
+
+## User settings
+xcuserdata/
+
+## Build results
+build/
+DerivedData/
+
+## Schemes
+# To support different environments (staging, production), etc.
+# Check https://developer.apple.com/library/content/documentation/General/Conceptual/DevPedia-CocoaCore/Project.html
+# If you want to keep shared schemes, uncomment the following line
+# !default.xcscheme
+
+## Bundle
+*.app
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Swift Package Manager
+.build/
+.swiftpm/
+
+## Misc
+*.DS_Store
+*.zip
+*.tar.gz
+build_output/
+Zoobbi.zip
+Zoobbi\ 2026-03-09\ 11-36-04/
