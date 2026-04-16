@@ -20,6 +20,7 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var errorMessage: String? = nil
     @Published var notifications: [NotificationModel] = []
     @Published var isFollowingLoading: Bool = false
+    @Published var cityName: String = "Jaipur"
 
     private let locationManager = CLLocationManager()
     private let api = APIService.shared
@@ -31,11 +32,33 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
 
+        if let data = UserDefaults.standard.data(forKey: "current_user") {
+            if let user = try? JSONDecoder().decode(LoginResponse.self, from: data) {
+                self.cityName = user.city ?? "Fetching location..."
+            }
+        }
+
+        loadCachedData()
         fetchDeals()
         fetchFollowingAndFavorites()
         fetchDealTypes()
         fetchCategories()
         fetchNotifications()
+    }
+
+    private func loadCachedData() {
+        if let data = UserDefaults.standard.data(forKey: "cached_deals"),
+           let decoded = try? JSONDecoder().decode([Deal].self, from: data) {
+            self.deals = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "cached_categories"),
+           let decoded = try? JSONDecoder().decode([BusinessCategory].self, from: data) {
+            self.categories = decoded
+        }
+        if let data = UserDefaults.standard.data(forKey: "cached_deal_types"),
+           let decoded = try? JSONDecoder().decode([DealType].self, from: data) {
+            self.dealTypes = decoded
+        }
     }
 
     func fetchNotifications() {
@@ -72,6 +95,9 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             DispatchQueue.main.async {
                 if case .success(let types) = result {
                     self.dealTypes = types
+                    if let encoded = try? JSONEncoder().encode(types) {
+                        UserDefaults.standard.set(encoded, forKey: "cached_deal_types")
+                    }
                 }
             }
         }
@@ -82,6 +108,9 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
             DispatchQueue.main.async {
                 if case .success(let cats) = result {
                     self.categories = cats
+                    if let encoded = try? JSONEncoder().encode(cats) {
+                        UserDefaults.standard.set(encoded, forKey: "cached_categories")
+                    }
                 }
             }
         }
@@ -106,6 +135,9 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
                 case .success(let fetchedDeals):
                     self.deals = fetchedDeals
                     self.errorMessage = nil
+                    if let encoded = try? JSONEncoder().encode(fetchedDeals) {
+                        UserDefaults.standard.set(encoded, forKey: "cached_deals")
+                    }
                 case .failure(let error):
                     print("Error fetching deals: \(error)")
                     self.errorMessage = error.localizedDescription
@@ -273,8 +305,18 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         self.userLocation = location
-        // Just fetch deals once we have the first location if we hadn't already
         fetchDeals()
+        updateCityName(from: location)
         locationManager.stopUpdatingLocation()
+    }
+
+    private func updateCityName(from location: CLLocation) {
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            guard let placemark = placemarks?.first, error == nil else { return }
+            DispatchQueue.main.async {
+                self.cityName = placemark.locality ?? placemark.subAdministrativeArea ?? placemark.administrativeArea ?? "Jaipur"
+            }
+        }
     }
 }

@@ -86,27 +86,13 @@ struct NotificationsView: View {
                             HStack(alignment: .top, spacing: 16) {
 
                                 // Business Logo or Placeholder
-                                AsyncImage(url: URL(string: formatUrl(note.business?.logo))) {
-                                    phase in
-                                    if let image = phase.image {
-                                        image.resizable()
-                                            .scaledToFill()
-                                    } else {
-                                        ZStack {
-                                            Circle()
-                                                .fill(Color(red: 0.85, green: 0.15, blue: 0.15))
-                                            Text(
-                                                String(
-                                                    (note.business?.businessName ?? "Z").prefix(1)
-                                                ).uppercased()
-                                            )
-                                            .font(
-                                                .system(size: 24, weight: .bold, design: .rounded)
-                                            )
-                                            .foregroundColor(.yellow)
-                                        }
+                                CachedAsyncImage(url: URL(string: formatUrl(note.business?.logo))) {
+                                    ZStack {
+                                        Circle().fill(Color.gray.opacity(0.1))
+                                        ProgressView()
                                     }
                                 }
+                                .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
 
@@ -162,7 +148,7 @@ struct NotificationsView: View {
     private func formatUrl(_ path: String?) -> String {
         guard let path = path, !path.isEmpty else { return "" }
         if path.hasPrefix("http") { return path }
-        let baseUrl = "https://zoobbi-backend-production.up.railway.app"
+        let baseUrl = "https://zoobbi.com"
         let fullPath = path.hasPrefix("/") ? path : "/\(path)"
         return baseUrl + fullPath
     }

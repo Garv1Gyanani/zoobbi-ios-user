@@ -140,7 +140,7 @@ struct ProfileEditView: View {
                                 .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
 
                             HStack(spacing: 8) {
-                                Text("+91 ")
+                                Text("+1 ")
                                     .font(.system(size: 15))
                                     .foregroundColor(.gray)
 
@@ -177,7 +177,7 @@ struct ProfileEditView: View {
 
                             if authViewModel.isLoading {
                                 ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                    .progressViewStyle(AndroidCircularProgressViewStyle(tint: .white))
                             }
                         }
                         .frame(maxWidth: .infinity)

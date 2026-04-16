@@ -29,7 +29,7 @@ struct ContentView: View {
                             .font(.subheadline)
                         
                         HStack(spacing: 0) {
-                            Text("+91 ")
+                            Text("+1 ")
                                 .foregroundColor(.black)
                                 .padding(.leading, 12)
                             TextField("Enter your Phone no", text: $phone)

@@ -15,6 +15,7 @@ struct SignupStep2Screen: View {
     @State private var email: String = ""
     @State private var selectedState: String = ""
     @State private var selectedCity: String = ""
+    @State private var navigateToOTP: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -161,9 +162,15 @@ struct SignupStep2Screen: View {
             Spacer()
                 .frame(height: 40)
 
+            NavigationLink(
+                destination: OTPScreen(viewModel: viewModel),
+                isActive: $navigateToOTP
+            ) { EmptyView() }
+            .hidden()
+
             // Confirm Button
             Button(action: {
-                var details = [
+                var details: [String: Any] = [
                     "firstName": firstName,
                     "lastName": lastName,
                     "name": "\(firstName) \(lastName)",
@@ -175,18 +182,43 @@ struct SignupStep2Screen: View {
                     "mobile": mobileNumber,
                 ]
 
-                if let image = viewModel.profileImage {
-                    viewModel.uploadProfileImage(image: image) { success in
-                        if success {
-                            details["profileImage"] = viewModel.profileImageUrl
-                            viewModel.registerProfile(details: details) { success in
-                                if success { appState.isLoggedIn = true }
+                if viewModel.isVerified {
+                    // Already have a token and verified, just update the profile
+                    if let image = viewModel.profileImage {
+                        viewModel.uploadProfileImage(image: image) { success in
+                            if success {
+                                var updatedDetails = details
+                                updatedDetails["profileImage"] = viewModel.profileImageUrl
+                                viewModel.registerProfile(details: updatedDetails) { success in
+                                    if success {
+                                        appState.isLoggedIn = true
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        viewModel.registerProfile(details: details) { success in
+                            if success {
+                                appState.isLoggedIn = true
                             }
                         }
                     }
                 } else {
-                    viewModel.registerProfile(details: details) { success in
-                        if success { appState.isLoggedIn = true }
+                    // New registration flow, needs OTP
+                    if let image = viewModel.profileImage {
+                        viewModel.uploadProfileImage(image: image) { success in
+                            if success {
+                                var updatedDetails = details
+                                updatedDetails["profileImage"] = viewModel.profileImageUrl
+                                viewModel.register(details: updatedDetails) { success, _ in
+                                    if success { navigateToOTP = true }
+                                }
+                            }
+                        }
+                    } else {
+                        viewModel.register(details: details) { success, _ in
+                            if success { navigateToOTP = true }
+                        }
                     }
                 }
             }) {
@@ -197,8 +229,8 @@ struct SignupStep2Screen: View {
                         .opacity(viewModel.isLoading ? 0 : 1)
                     if viewModel.isLoading {
                         ProgressView().progressViewStyle(
-                            CircularProgressViewStyle(
-                                tint: Color(red: 198 / 255, green: 255 / 255, blue: 0 / 255)))
+                            AndroidCircularProgressViewStyle(
+                                tint: .appLoadingGreen))
                     }
                 }
                 .frame(maxWidth: .infinity)

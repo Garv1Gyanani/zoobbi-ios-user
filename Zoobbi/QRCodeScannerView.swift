@@ -90,7 +90,7 @@ struct QRCodeScannerView: View {
                 Color.black.opacity(0.4).ignoresSafeArea()
                 ProgressView()
                     .scaleEffect(1.5)
-                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                    .progressViewStyle(AndroidCircularProgressViewStyle(tint: .white))
             }
         }
     }

@@ -13,7 +13,7 @@ struct DealCard: View {
     var onCallTap: (() -> Void)? = nil
     var onNavigateTap: (() -> Void)? = nil
 
-    private let baseUrl = "https://zoobbi-backend-production.up.railway.app"
+    private let baseUrl = "https://zoobbi.com"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {

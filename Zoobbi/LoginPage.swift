@@ -42,7 +42,7 @@ struct LoginView: View {
                             .foregroundColor(.black)
 
                         HStack(spacing: 0) {
-                            Text("+91 ")
+                            Text("+1 ")
                                 .font(.system(size: 14, weight: .bold))
                                 .foregroundColor(.black)
                                 .padding(.leading, 16)
@@ -91,7 +91,7 @@ struct LoginView: View {
                         if viewModel.mobileNumber.count < 10 {
                             validationError = "Please enter a valid 10-digit mobile number"
                         } else {
-                            viewModel.sendOtp { success in
+                            viewModel.sendOtp { success, _ in
                                 if success { navigateToOTP = true }
                             }
                         }
@@ -106,9 +106,8 @@ struct LoginView: View {
                             if viewModel.isLoading {
                                 ProgressView()
                                     .progressViewStyle(
-                                        CircularProgressViewStyle(
-                                            tint: Color(
-                                                red: 198 / 255, green: 255 / 255, blue: 0 / 255)))
+                                        AndroidCircularProgressViewStyle(
+                                            tint: .appLoadingGreen))
                             }
                         }
                         .frame(maxWidth: .infinity)
@@ -203,7 +202,7 @@ struct RegisterStartPage: View {
                         .foregroundColor(.black)
 
                     HStack(spacing: 0) {
-                        Text("+91 ")
+                        Text("+1 ")
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(.black)
                             .padding(.leading, 16)
@@ -253,7 +252,7 @@ struct RegisterStartPage: View {
                     if viewModel.mobileNumber.count < 10 {
                         validationError = "Please enter a valid 10-digit mobile number"
                     } else {
-                        viewModel.sendOtp { success in
+                        viewModel.sendOtp { success, _ in
                             if success {
                                 navigateToOTP = true
                             }
@@ -268,8 +267,8 @@ struct RegisterStartPage: View {
                         if viewModel.isLoading {
                             ProgressView()
                                 .progressViewStyle(
-                                    CircularProgressViewStyle(
-                                        tint: Color(red: 198 / 255, green: 255 / 255, blue: 0 / 255)
+                                    AndroidCircularProgressViewStyle(
+                                        tint: .appLoadingGreen
                                     ))
                         }
                     }

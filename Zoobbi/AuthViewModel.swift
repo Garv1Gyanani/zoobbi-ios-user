@@ -50,19 +50,38 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func sendOtp(completion: @escaping (Bool) -> Void) {
+    func sendOtp(completion: @escaping (Bool, String?) -> Void) {
         guard !mobileNumber.isEmpty else { return }
         isLoading = true
+        error = nil
         api.sendOtp(mobile: mobileNumber) { result in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
-                case .success:
+                case .success(let response):
                     self.isOtpSent = true
-                    completion(true)
+                    completion(true, response["message"])
                 case .failure(let error):
                     self.error = error.localizedDescription
-                    completion(false)
+                    completion(false, error.localizedDescription)
+                }
+            }
+        }
+    }
+
+    func register(details: [String: Any], completion: @escaping (Bool, String?) -> Void) {
+        isLoading = true
+        error = nil
+        api.register(details: details) { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let response):
+                    self.isOtpSent = true
+                    completion(true, response["message"])
+                case .failure(let error):
+                    self.error = error.localizedDescription
+                    completion(false, error.localizedDescription)
                 }
             }
         }
@@ -107,7 +126,7 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func registerProfile(details: [String: String], completion: @escaping (Bool) -> Void) {
+    func registerProfile(details: [String: Any], completion: @escaping (Bool) -> Void) {
         isLoading = true
         api.registerProfile(details: details) { result in
             DispatchQueue.main.async {

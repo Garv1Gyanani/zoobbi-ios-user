@@ -182,6 +182,10 @@ class APIService {
             completion: completion)
     }
 
+    func register(details: [String: Any], completion: @escaping (Result<[String: String], Error>) -> Void) {
+        request(endpoint: "users/register", method: "POST", body: details, completion: completion)
+    }
+
     func verifyOtp(
         mobile: String, otp: String, completion: @escaping (Result<LoginResponse, Error>) -> Void
     ) {
@@ -195,7 +199,7 @@ class APIService {
     }
 
     func registerProfile(
-        details: [String: String], completion: @escaping (Result<LoginResponse, Error>) -> Void
+        details: [String: Any], completion: @escaping (Result<LoginResponse, Error>) -> Void
     ) {
         request(endpoint: "users/profile", method: "POST", body: details) {
             (result: Result<LoginResponse, Error>) in

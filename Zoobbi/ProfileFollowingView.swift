@@ -6,7 +6,7 @@ struct ProfileFollowingView: View {
 
     @ObservedObject var homeViewModel: HomeViewModel
 
-    private let baseUrl = "https://zoobbi-backend-production.up.railway.app"
+    private let baseUrl = "https://zoobbi.com"
 
     var filteredFollowing: [FollowingBusiness] {
         if searchText.isEmpty {
@@ -150,7 +150,7 @@ struct ProfileFollowingView: View {
             if homeViewModel.isFollowingLoading && homeViewModel.followingBusinesses.isEmpty {
                 Spacer()
                 ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: Color(red: 0.05, green: 0.22, blue: 0.23)))
+                    .progressViewStyle(AndroidCircularProgressViewStyle(tint: .appLoadingGreen))
                 Spacer()
             } else if !homeViewModel.isFollowingLoading && homeViewModel.followingBusinesses.isEmpty {
                 Spacer()

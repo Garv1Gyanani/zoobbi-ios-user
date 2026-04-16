@@ -40,7 +40,7 @@ struct HomeView: View {
                                         .foregroundColor(.darkGreen)
                                         .frame(width: 16, height: 16)
                                         .padding(.leading, 6)
-                                    Text("Jaipur")
+                                    Text(viewModel.cityName)
                                         .font(.system(size: 18, weight: .bold))
                                         .foregroundColor(.black)
                                 }

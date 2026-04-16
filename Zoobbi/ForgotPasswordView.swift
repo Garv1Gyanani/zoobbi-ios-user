@@ -17,7 +17,7 @@ struct ForgotPasswordView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Phone No")
                 HStack(spacing: 0) {
-                    Text("+91 ")
+                    Text("+1 ")
                         .foregroundColor(.black)
                         .padding(.leading, 12)
                     TextField("Enter your Phone no", text: $phone)

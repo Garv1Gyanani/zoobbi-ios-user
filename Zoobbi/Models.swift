@@ -125,6 +125,7 @@ struct User: Codable {
     let email: String?
     let mobile: String?
     let profileImage: String?
+    let city: String?
     let token: String?
 }
 
@@ -136,6 +137,7 @@ struct LoginResponse: Codable {
     var mobile: String?
     let token: String
     var profileImage: String?
+    var city: String?
     var isProfileComplete: Bool?
 }
 

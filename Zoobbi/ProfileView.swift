@@ -53,12 +53,13 @@ struct ProfileView: View {
                                 if let imageUrl = appState.currentUser?.profileImage,
                                     let url = URL(string: formatUrl(imageUrl))
                                 {
-                                    AsyncImage(url: url) { image in
-                                        image.resizable()
-                                            .scaledToFill()
-                                    } placeholder: {
-                                        Color.gray.opacity(0.1)
+                                    CachedAsyncImage(url: url) {
+                                        ZStack {
+                                            Color.gray.opacity(0.1)
+                                            ProgressView()
+                                        }
                                     }
+                                    .scaledToFill()
                                     .frame(width: 80, height: 80)
                                     .clipShape(Circle())
                                 } else {
@@ -185,7 +186,7 @@ struct ProfileView: View {
         }
     }
 
-    private let baseUrl = "https://zoobbi-backend-production.up.railway.app"
+    private let baseUrl = "https://zoobbi.com"
 
     private func formatUrl(_ path: String?) -> String {
         guard let path = path, !path.isEmpty else { return "" }

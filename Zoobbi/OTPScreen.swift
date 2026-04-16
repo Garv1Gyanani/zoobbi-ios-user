@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct OTPScreen: View {
     @Environment(\.dismiss) var dismiss
@@ -9,6 +10,10 @@ struct OTPScreen: View {
 
     @State private var validationError: String? = nil
     @State private var navigateToRegister: Bool = false
+
+    @State private var resendTimer: Int = 30
+    @State private var canResend: Bool = false
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -41,7 +46,7 @@ struct OTPScreen: View {
 
             Spacer().frame(height: 8)
 
-            Text("Sent to +91 \(viewModel.mobileNumber)")
+            Text("Sent to +1 \(viewModel.mobileNumber)")
                 .font(.system(size: 14))
                 .foregroundColor(.textGrayColor)
                 .padding(.horizontal, 24)
@@ -125,8 +130,8 @@ struct OTPScreen: View {
                     if viewModel.isLoading {
                         ProgressView()
                             .progressViewStyle(
-                                CircularProgressViewStyle(
-                                    tint: Color(red: 198 / 255, green: 255 / 255, blue: 0 / 255)))
+                                AndroidCircularProgressViewStyle(
+                                    tint: .appLoadingGreen))
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -134,8 +139,39 @@ struct OTPScreen: View {
                 .background(Color(red: 0.0549, green: 0.2157, blue: 0.2314))
                 .cornerRadius(28)
             }
-            .padding(.horizontal, 24)
             .disabled(viewModel.isLoading)
+
+            Spacer().frame(height: 24)
+
+            HStack {
+                Spacer()
+                Text(canResend ? "Didn't receive the code? " : "Resend code in ")
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
+                Button(action: {
+                    if canResend {
+                        viewModel.sendOtp { success, message in
+                            if success {
+                                resendTimer = 30
+                                canResend = false
+                            }
+                        }
+                    }
+                }) {
+                    Text(canResend ? "Resend" : "\(resendTimer)s")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundColor(canResend ? Color(red: 14 / 255, green: 55 / 255, blue: 59 / 255) : .gray)
+                }
+                .disabled(!canResend)
+                Spacer()
+            }
+            .onReceive(timer) { _ in
+                if resendTimer > 0 {
+                    resendTimer -= 1
+                } else {
+                    canResend = true
+                }
+            }
 
             Spacer()
         }

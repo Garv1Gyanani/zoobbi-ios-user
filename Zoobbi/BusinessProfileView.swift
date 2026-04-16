@@ -20,7 +20,7 @@ struct BusinessProfileView: View {
                 businessId: businessId, homeViewModel: homeViewModel))
     }
 
-    private let baseUrl = "https://zoobbi-backend-production.up.railway.app"
+    private let baseUrl = "https://zoobbi.com"
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -119,7 +119,7 @@ struct BusinessProfileView: View {
                             ZStack {
                                 if businessVM.isFollowLoading {
                                     ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle(tint: businessVM.isFollowing ? Color.darkGreen : .white))
+                                        .progressViewStyle(AndroidCircularProgressViewStyle(tint: businessVM.isFollowing ? Color.darkGreen : .white))
                                         .scaleEffect(0.8)
                                 } else {
                                     Text(businessVM.isFollowing ? "Following" : "Follow")
@@ -226,17 +226,8 @@ struct BusinessProfileView: View {
                 if businessVM.isLoading && businessVM.business == nil {
                     ZStack {
                         Color.white.ignoresSafeArea()
-                        VStack(spacing: 20) {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .darkGreen))
-                            Text("Loading Business Profile...")
-                                .foregroundColor(.gray)
-
-                            Button("Cancel") {
-                                dismiss()
-                            }
-                            .padding(.top, 20)
-                        }
+                        ProgressView()
+                            .progressViewStyle(AndroidCircularProgressViewStyle(tint: .appLoadingGreen))
                     }
                 } else if businessVM.business == nil && !businessVM.isLoading {
                     ZStack {
