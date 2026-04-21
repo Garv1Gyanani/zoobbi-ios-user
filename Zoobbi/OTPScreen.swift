@@ -5,7 +5,6 @@ struct OTPScreen: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: AuthViewModel
     @EnvironmentObject var appState: AppState
-    @State private var otpDigits: [String] = Array(repeating: "", count: 6)
     @FocusState private var focusedField: Int?
 
     @State private var validationError: String? = nil
@@ -29,13 +28,18 @@ struct OTPScreen: View {
             .hidden()
 
             // Back Button
-            Button(action: { dismiss() }) {
+            Button(action: {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                dismiss()
+            }) {
                 Image(systemName: "arrow.left")
                     .font(.system(size: 24))
                     .foregroundColor(.black)
+                    .padding(8)
+                    .contentShape(Rectangle())
             }
-            .padding(.top, 40)
-            .padding(.horizontal, 24)
+            .padding(.top, 16)
+            .padding(.leading, 16)
 
             Spacer().frame(height: 24)
 
@@ -53,37 +57,47 @@ struct OTPScreen: View {
 
             Spacer().frame(height: 32)
 
-            // OTP Fields (6 boxes)
-            HStack(spacing: 12) {
-                ForEach(0..<6, id: \.self) { index in
-                    TextField("", text: $otpDigits[index])
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.center)
-                        .font(.system(size: 20, weight: .bold))
-                        .focused($focusedField, equals: index)
-                        .frame(maxWidth: .infinity)
-                        .aspectRatio(1, contentMode: .fit)
-                        .background(Color.inputBgGray)
-                        .cornerRadius(12)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    validationError != nil ? Color.red : Color.clear, lineWidth: 1)
-                        )
-                        .onChange(of: otpDigits[index]) { newValue in
-                            if newValue.count > 1 {
-                                otpDigits[index] = String(newValue.last!)
-                            }
-                            viewModel.otpCode = otpDigits.joined()
-                            if !newValue.isEmpty {
-                                if index < 5 {
-                                    focusedField = index + 1
-                                } else {
-                                    focusedField = nil
-                                }
-                                validationError = nil
-                            }
+            // OTP Input Area
+            ZStack {
+                // Hidden Real TextField that captures all input
+                TextField("", text: $viewModel.otpCode)
+                    .frame(width: 1, height: 1)
+                    .opacity(0)
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .focused($focusedField, equals: 0)
+                    .onChange(of: viewModel.otpCode) { newValue in
+                        if newValue.count > 6 {
+                            viewModel.otpCode = String(newValue.prefix(6))
                         }
+                        validationError = nil
+                    }
+
+                // Visual boxes that "mirror" the hidden field
+                HStack(spacing: 12) {
+                    ForEach(0..<6, id: \.self) { index in
+                        let char = index < viewModel.otpCode.count ? String(Array(viewModel.otpCode)[index]) : ""
+                        let isActive = focusedField == 0 && index == viewModel.otpCode.count
+
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.inputBgGray)
+                            .aspectRatio(1, contentMode: .fit)
+                            .overlay(
+                                Text(char)
+                                    .font(.system(size: 20, weight: .bold))
+                                    .foregroundColor(.black)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(
+                                        validationError != nil ? Color.red : (isActive ? Color.black.opacity(0.5) : Color.clear),
+                                        lineWidth: 1.5)
+                            )
+                    }
+                }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    focusedField = 0
                 }
             }
             .padding(.horizontal, 24)

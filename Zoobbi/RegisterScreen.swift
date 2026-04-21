@@ -40,15 +40,18 @@ struct RegisterScreen: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Back Button
-            SwiftUI.Button {
+            SwiftUI.Button(action: {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 dismiss()
-            } label: {
+            }) {
                 Image(systemName: "arrow.left")
                     .font(.system(size: 24))
                     .foregroundColor(.black)
+                    .padding(8)
+                    .contentShape(Rectangle())
             }
             .padding(.top, 16)
-            .padding(.horizontal, 24)
+            .padding(.leading, 16)
 
             Spacer()
                 .frame(height: 32)

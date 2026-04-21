@@ -170,14 +170,17 @@ struct RegisterStartPage: View {
                 Spacer().frame(height: 40)
 
                 // Back Button
-                Button {
+                Button(action: {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                     dismiss()
-                } label: {
+                }) {
                     Image(systemName: "arrow.left")
                         .font(.system(size: 24))
                         .foregroundColor(.black)
+                        .padding(8)
+                        .contentShape(Rectangle())
                 }
-                .padding(.horizontal, 24)
+                .padding(.leading, 16)
 
                 Spacer().frame(height: 24)
 

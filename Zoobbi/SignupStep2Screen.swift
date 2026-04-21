@@ -22,14 +22,17 @@ struct SignupStep2Screen: View {
 
             // Back Button
             Button(action: {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 dismiss()
             }) {
                 Image(systemName: "arrow.left")
                     .font(.system(size: 24))
                     .foregroundColor(.black)
+                    .padding(8)
+                    .contentShape(Rectangle())
             }
             .padding(.top, 16)
-            .padding(.horizontal, 24)
+            .padding(.leading, 16)
 
             Spacer()
                 .frame(height: 32)
