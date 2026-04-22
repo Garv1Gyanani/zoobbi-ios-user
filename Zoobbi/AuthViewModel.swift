@@ -149,4 +149,19 @@ class AuthViewModel: ObservableObject {
     func logout() {
         api.clearSession()
     }
+
+    func checkUser(mobile: String, role: String? = nil, completion: @escaping (Bool, Bool) -> Void) {
+        isLoading = true
+        api.checkUser(mobile: mobile, role: role) { result in
+            DispatchQueue.main.async {
+                self.isLoading = false
+                switch result {
+                case .success(let response):
+                    completion(response.exists, response.isComplete)
+                case .failure:
+                    completion(false, false)
+                }
+            }
+        }
+    }
 }

@@ -54,21 +54,31 @@ struct DealCard: View {
                     Spacer()
 
                     // Actions (Heart, More)
-                    HStack(spacing: 16) {
-                        Button(action: { onFavoriteTap?() }) {
+                    HStack(spacing: 4) {
+                        Button(action: {
+                            UISelectionFeedbackGenerator().selectionChanged()
+                            onFavoriteTap?()
+                        }) {
                             Image(systemName: isFavorite ? "heart.fill" : "heart")
                                 .font(.system(size: 20))
                                 .foregroundColor(isFavorite ? .red : .gray)
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
                         }
-                        .buttonStyle(BorderlessButtonStyle())
+                        .buttonStyle(PlainButtonStyle())
 
-                        Button(action: { onEllipsisTap?() }) {
+                        Button(action: {
+                            UISelectionFeedbackGenerator().selectionChanged()
+                            onEllipsisTap?()
+                        }) {
                             Image(systemName: "ellipsis")
                                 .font(.system(size: 20))
                                 .foregroundColor(.gray)
                                 .rotationEffect(.degrees(90))
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
                         }
-                        .buttonStyle(BorderlessButtonStyle())
+                        .buttonStyle(PlainButtonStyle())
                     }
                 }
                 .padding(.top, 12)

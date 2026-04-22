@@ -128,14 +128,17 @@ struct LoginView: View {
                     Spacer().frame(height: 24)
 
                     // Register Link
-                    HStack(spacing: 4) {
-                        Text("Don't have an account?")
-                            .font(.system(size: 14))
-                            .foregroundColor(.textGrayColor)
-                        Button(action: { navigateToRegister = true }) {
-                            Text("Register")
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundColor(.black)
+                    VStack(spacing: 16) {
+
+                        HStack(spacing: 4) {
+                            Text("Don't have an account?")
+                                .font(.system(size: 14))
+                                .foregroundColor(.textGrayColor)
+                            Button(action: { navigateToRegister = true }) {
+                                Text("Register")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .foregroundColor(.black)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -255,9 +258,15 @@ struct RegisterStartPage: View {
                     if viewModel.mobileNumber.count < 10 {
                         validationError = "Please enter a valid 10-digit mobile number"
                     } else {
-                        viewModel.sendOtp { success, _ in
-                            if success {
-                                navigateToOTP = true
+                        viewModel.checkUser(mobile: viewModel.mobileNumber, role: "user") { exists, isComplete in
+                            if exists && isComplete {
+                                validationError = "An account with this mobile already exists. Please Login."
+                            } else {
+                                viewModel.sendOtp { success, _ in
+                                    if success {
+                                        navigateToOTP = true
+                                    }
+                                }
                             }
                         }
                     }

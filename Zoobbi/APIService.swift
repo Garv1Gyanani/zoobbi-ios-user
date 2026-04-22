@@ -210,18 +210,6 @@ class APIService {
         }
     }
 
-    func login(
-        email: String, pass: String, completion: @escaping (Result<LoginResponse, Error>) -> Void
-    ) {
-        request(endpoint: "users/login", method: "POST", body: ["email": email, "password": pass]) {
-            (result: Result<LoginResponse, Error>) in
-            if case .success(let response) = result {
-                self.token = response.token
-            }
-            completion(result)
-        }
-    }
-
     // MARK: - Deals & Business
 
     func getDeals(
@@ -334,6 +322,18 @@ class APIService {
     ) {
         request(endpoint: "users/notifications/\(id)/read", method: "PUT", completion: completion)
     }
+
+    func checkUser(mobile: String, role: String? = nil, completion: @escaping (Result<CheckUserResponse, Error>) -> Void) {
+        var endpoint = "users/check/\(mobile)"
+        if let role = role { endpoint += "?role=\(role)" }
+        request(endpoint: endpoint, completion: completion)
+    }
+}
+
+struct CheckUserResponse: Codable {
+    let exists: Bool
+    let isComplete: Bool
+    let role: String?
 }
 
 struct EmptyResponse: Codable {}

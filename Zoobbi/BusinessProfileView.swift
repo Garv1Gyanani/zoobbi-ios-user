@@ -5,6 +5,7 @@ struct BusinessProfileView: View {
     let businessId: String
     @Environment(\.dismiss) var dismiss
     @StateObject private var businessVM: BusinessProfileViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
 
     // For Reporting
     @State private var selectedReportDeal: Deal? = nil
@@ -13,8 +14,9 @@ struct BusinessProfileView: View {
     @State private var reportReason: String = ""
     @State private var reportDescription: String = ""
 
-    init(businessId: String, homeViewModel: HomeViewModel? = nil) {
+    init(businessId: String, homeViewModel: HomeViewModel) {
         self.businessId = businessId
+        self.homeViewModel = homeViewModel
         _businessVM = StateObject(
             wrappedValue: BusinessProfileViewModel(
                 businessId: businessId, homeViewModel: homeViewModel))
@@ -193,8 +195,8 @@ struct BusinessProfileView: View {
                         ForEach(businessVM.deals) { deal in
                             DealCard(
                                 deal: deal,
-                                isFavorite: businessVM.isFavorite(deal._id),
-                                distance: "0.1 km away",
+                                isFavorite: homeViewModel.isFavorite(deal._id),
+                                distance: businessVM.calculatedDistance,
                                 onCardTap: { businessVM.trackDealView(deal._id) },
                                 onFavoriteTap: {
                                     businessVM.homeViewModel?.toggleFavorite(dealId: deal._id)

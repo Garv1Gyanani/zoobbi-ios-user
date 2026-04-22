@@ -40,43 +40,6 @@ struct ContentView: View {
                         .cornerRadius(10)
                     }
                     
-                    // Password Field
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Password")
-                            .font(.subheadline)
-                        
-                        HStack {
-                            if isPasswordHidden {
-                                SecureField("Enter your Password", text: $password)
-                            } else {
-                                TextField("Enter your Password", text: $password)
-                            }
-                            
-                            Button {
-                                isPasswordHidden.toggle()
-                            } label: {
-                                Image(systemName: isPasswordHidden ? "eye.slash" : "eye")
-                                    .foregroundColor(.gray)
-                            }
-                        }
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(10)
-                    }
-                    
-                    // Forgot Password
-                    HStack {
-                        Spacer()
-                        NavigationLink("Forgot Password?") {
-                            ForgotPasswordView()
-                        }
-                        .font(.footnote)
-                        .foregroundColor(.red)
-
-                        .font(.footnote)
-                        .foregroundColor(.red)
-                    }
-                    
                     // Login Button
                     Button {
                         print("Login tapped")

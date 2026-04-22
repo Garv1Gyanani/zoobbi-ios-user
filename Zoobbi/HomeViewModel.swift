@@ -288,7 +288,7 @@ class HomeViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
 
     func calculateDistance(destLat: Double?, destLng: Double?) -> String {
         guard let userLoc = userLocation, let dLat = destLat, let dLng = destLng else {
-            return "0.1 km away"
+            return "Nearby"
         }
 
         let destLoc = CLLocation(latitude: dLat, longitude: dLng)

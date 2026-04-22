@@ -13,6 +13,7 @@ struct SignupStep2Screen: View {
     var mobileNumber: String
 
     @State private var email: String = ""
+    @State private var password: String = ""
     @State private var selectedState: String = ""
     @State private var selectedCity: String = ""
     @State private var navigateToOTP: Bool = false

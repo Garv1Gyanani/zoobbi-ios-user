@@ -99,8 +99,7 @@ struct QRCodeScannerView: View {
         var finalId = businessId
 
         // Check if the scanned string is a URL and extract the ID
-        if let url = URL(string: businessId), 
-           (url.host?.contains("zoobbi.com") == true || url.host?.contains("zoobbi.divanex.in") == true) {
+        if let url = URL(string: businessId) {
             let components = url.pathComponents
             if let index = components.firstIndex(of: "business"), index + 1 < components.count {
                 finalId = components[index + 1]

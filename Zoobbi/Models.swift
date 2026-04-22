@@ -209,3 +209,8 @@ struct NotificationModel: Codable, Identifiable {
 
     var id: String { _id }
 }
+
+// MARK: - Generic Response
+struct MessageResponse: Codable {
+    let message: String
+}

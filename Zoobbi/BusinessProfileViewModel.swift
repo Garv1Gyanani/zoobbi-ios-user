@@ -29,6 +29,15 @@ class BusinessProfileViewModel: ObservableObject {
         return homeViewModel?.isFavorite(dealId) ?? false
     }
 
+    var calculatedDistance: String {
+        guard let location = business?.location,
+              let coords = location.coordinates,
+              coords.count >= 2 else {
+            return "Nearby"
+        }
+        return homeViewModel?.calculateDistance(destLat: coords[1], destLng: coords[0]) ?? "Nearby"
+    }
+
     func fetchData() {
         fetchBusinessProfile()
         fetchBusinessDeals()
